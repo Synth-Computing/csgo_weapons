@@ -18,7 +18,7 @@ jobs:
 
       - name: Download PTaH include
         run: |
-          wget -q https://raw.githubusercontent.com/komashchenko/PTaH/master/pawn/PTaH.inc \
+          wget -q https://raw.githubusercontent.com/komashchenko/PTaH/master/PTaH.inc \
             -O addons/sourcemod/scripting/include/PTaH.inc
 
       - name: Compile plugin

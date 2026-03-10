@@ -1,0 +1,58 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SourcePawn Compiler
+        uses: rumblefrog/setup-sp@master
+        with:
+          version: "1.11.x"
+
+      - name: Download PTaH include
+        run: |
+          wget -q https://raw.githubusercontent.com/komashchenko/PTaH/master/pawn/PTaH.inc \
+            -O addons/sourcemod/scripting/include/PTaH.inc
+
+      - name: Compile plugin
+        run: |
+          cd addons/sourcemod/scripting
+          spcomp -i include weapons.sp -o ../plugins/weapons.smx
+
+      - name: Stage release files
+        run: |
+          mkdir -p release/addons/sourcemod/plugins
+          mkdir -p release/cfg/sourcemod
+
+          cp addons/sourcemod/plugins/weapons.smx release/addons/sourcemod/plugins/
+          cp -r addons/sourcemod/configs release/addons/sourcemod/
+          cp -r addons/sourcemod/translations release/addons/sourcemod/
+          cp addons/sourcemod/scripting/include/weapons.inc release/addons/sourcemod/ 2>/dev/null || true
+          cp cfg/sourcemod/weapons.cfg release/cfg/sourcemod/
+
+      - name: Package release
+        run: |
+          cd release
+          zip -r ../weapons-plugin.zip .
+
+      - name: Generate release tag
+        id: tag
+        run: echo "tag=build-$(date +'%Y%m%d-%H%M%S')-$(echo $GITHUB_SHA | cut -c1-7)" >> "$GITHUB_OUTPUT"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Build ${{ steps.tag.outputs.tag }}
+          body: |
+            Automated build from commit ${{ github.sha }}.
+
+            **Commit message:** ${{ github.event.head_commit.message }}
+          files: weapons-plugin.zip

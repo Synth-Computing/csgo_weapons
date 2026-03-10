@@ -18,7 +18,7 @@
 void GetPlayerData(int client)
 {
 	char steamid[32];
-	if(GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid), true))
+	if(GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid), false))
 	{
 		char query[255];
 		FormatEx(query, sizeof(query), "SELECT * FROM %sweapons WHERE steamid = '%s'", g_TablePrefix, steamid);
@@ -55,7 +55,7 @@ public void T_GetPlayerDataCallback(Database database, DBResultSet results, cons
 				g_iKnife[clientIndex] = results.FetchInt(1);
 			}
 			char steamid[32];
-			if(GetClientAuthId(clientIndex, AuthId_Steam2, steamid, sizeof(steamid), true))
+			if(GetClientAuthId(clientIndex, AuthId_Steam2, steamid, sizeof(steamid), false))
 			{
 				char query[255];
 				FormatEx(query, sizeof(query), "REPLACE INTO %sweapons_timestamps (steamid, last_seen) VALUES ('%s', %d)", g_TablePrefix, steamid, GetTime());
@@ -104,7 +104,7 @@ public void T_TimestampCallback(Database database, DBResultSet results, const ch
 void UpdatePlayerData(int client, char[] updateFields)
 {
 	char steamid[32];
-	if(GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid), true))
+	if(GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid), false))
 	{
 		char query[1024];
 		FormatEx(query, sizeof(query), "UPDATE %sweapons SET %s WHERE steamid = '%s'", g_TablePrefix, updateFields, steamid);
@@ -902,7 +902,7 @@ public void T_DeleteInactivePlayerDataCallback(Database database, DBResultSet re
 void CreatePlayerData(int client)
 {
 	char steamid[32];
-	if(GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid), true))
+	if(GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid), false))
 	{
 		char query[255];
 		FormatEx(query, sizeof(query), "INSERT INTO %sweapons (steamid) VALUES ('%s')", g_TablePrefix, steamid);
@@ -916,7 +916,7 @@ void CreatePlayerData(int client)
 void ResetPlayerData(int client)
 {
 	char steamid[32];
-	if(GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid), true))
+	if(GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid), false))
 	{
 		char query[255];
 		FormatEx(query, sizeof(query), "DELETE FROM %sweapons WHERE steamid = '%s'", g_TablePrefix, steamid);

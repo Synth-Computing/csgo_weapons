@@ -23,6 +23,7 @@ jobs:
 
       - name: Compile plugin
         run: |
+          mkdir -p addons/sourcemod/plugins
           cd addons/sourcemod/scripting
           spcomp -i include weapons.sp -o ../plugins/weapons.smx
 

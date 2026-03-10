@@ -44,7 +44,7 @@ jobs:
       - name: Package release
         run: |
           cd release
-          zip -r ../weapons-plugin.zip .
+          tar -czf ../weapons-plugin.tar.gz .
 
       - name: Generate release tag
         id: tag
@@ -59,4 +59,4 @@ jobs:
             Automated build from commit ${{ github.sha }}.
 
             **Commit message:** ${{ github.event.head_commit.message }}
-          files: weapons-plugin.zip
+          files: weapons-plugin.tar.gz
